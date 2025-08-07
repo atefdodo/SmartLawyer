@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">SmartLawyer</string>
+
+    <!-- Navigation & Dialog Actions -->
+    <string name="back">رجوع</string>
+    <string name="cancel">إلغاء</string>
+    <string name="confirm">تأكيد</string>
+    <string name="select">اختيار</string>
+    <string name="save">حفظ</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="ok">موافق</string>
+    <string name="dismiss">تجاهل"</string>
+
+    <!-- Common Actions -->
+    <string name="add">إضافة</string>
+    <string name="edit">تعديل</string>
+    <string name="delete">حذف</string>
+    <string name="search">بحث</string>
+    <string name="filter">تصفية</string>
+    <string name="refresh">تحديث</string>
+    <string name="share">مشاركة</string>
+    <string name="copy">نسخ</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_title">لوحة التحكم</string>
+    <string name="dashboard_welcome">مرحباً بك في لوحة التحكم</string>
+    <string name="dashboard_description">هذا هو التطبيق الرئيسي للمحامي الذكي</string>
+    <string name="view_clients_list">عرض قائمة العملاء</string>
+    <string name="add_new_client">إضافة عميل جديد</string>
+    <string name="view_cases_list">عرض قائمة القضايا</string>
+    <string name="register_new_case">تسجيل قضية جديدة</string>
+    <string name="logout">تسجيل الخروج</string>
+    <string name="logout_success">تم تسجيل الخروج</string>
+
+    <!-- Authentication -->
+    <string name="login_title">تسجيل الدخول</string>
+    <string name="register_title">إنشاء حساب جديد</string>
+    <string name="email">البريد الإلكتروني</string>
+    <string name="password">كلمة المرور</string>
+    <string name="confirm_password">تأكيد كلمة المرور</string>
+    <string name="login_button">تسجيل الدخول</string>
+    <string name="register_button">إنشاء الحساب</string>
+    <string name="biometric_login">تسجيل الدخول بالبصمة</string>
+    <string name="normal_login">تسجيل دخول عادي</string>
+    <string name="no_account">ليس لديك حساب؟ سجل الآن</string>
+    <string name="has_account">لديك حساب بالفعل؟ سجل دخولك</string>
+    <string name="skip">تخطي</string>
+
+    <!-- Client Management -->
+    <string name="client_registration_title">تسجيل عميل جديد</string>
+    <string name="client_list_title">قائمة العملاء</string>
+    <string name="client">عميل</string>
+    <string name="client_name">اسم العميل</string>
+    <string name="client_address">العنوان</string>
+    <string name="client_phone">رقم الهاتف</string>
+    <string name="phone">هاتف</string>
+    <string name="phone_number">رقم الهاتف</string>
+    <string name="client_email_optional">البريد الإلكتروني (اختياري)</string>
+    <string name="client_power_of_attorney_optional">رقم الوكالة (اختياري)</string>
+    <string name="power_of_attorney_number">رقم الوكالة</string>
+    <string name="power_of_attorney_format">وكالة: %1$s</string>
+    <string name="save_client">حفظ العميل</string>
+    <string name="search_clients">البحث في العملاء</string>
+    <string name="client_details">تفاصيل العميل</string>
+    <string name="no_clients">لا توجد عملاء</string>
+    <string name="no_clients_found">لا يوجد عملاء</string>
+    <string name="no_search_results">لا توجد نتائج للبحث</string>
+    <string name="add_client">إضافة عميل جديد</string>
+    <string name="close">إغلاق</string>
+    <string name="loading_clients">جاري تحميل العملاء…</string>
+    <string name="error_loading_clients">خطأ في تحميل العملاء</string>
+    <string name="error_searching_clients">خطأ في البحث عن العملاء</string>
+    <string name="delete_client">حذف العميل</string>
+    <string name="delete_client_title">حذف العميل</string>
+    <string name="delete_client_confirmation">هل أنت متأكد من حذف العميل "%1$s"؟</string>
+
+    <!-- Case Management -->
+    <string name="case_registration_title">تسجيل قضية جديدة</string>
+    <string name="case_list_title">قائمة القضايا</string>
+    <string name="case_number">رقم القضية</string>
+    <string name="case_year">سنة القضية</string>
+    <string name="registration_date">تاريخ القيد بالمحكمة</string>
+    <string name="select_client">اختيار العميل</string>
+    <string name="client_role">صفة العميل</string>
+    <string name="opponent_name">اسم الخصم</string>
+    <string name="opponent_role">صفة الخصم</string>
+    <string name="case_subject">موضوع القضية</string>
+    <string name="court_name">اسم المحكمة</string>
+    <string name="case_type">نوع القضية</string>
+    <string name="first_session_date">تاريخ أول جلسة</string>
+    <string name="save_case">حفظ القضية</string>
+    <string name="search_cases">البحث في القضايا</string>
+    <string name="case_details">تفاصيل القضية</string>
+    <string name="no_cases">لا توجد قضايا</string>
+    <string name="add_case">إضافة قضية جديدة</string>
+
+    <!-- Case Types -->
+    <string name="case_type_civil_partial">مدني جزئي</string>
+    <string name="case_type_civil_full">مدني كلي</string>
+    <string name="case_type_labor">عمالي</string>
+    <string name="case_type_labor_appeal">استئناف عمالي</string>
+    <string name="case_type_misdemeanor">جنحة</string>
+    <string name="case_type_felony">جناية</string>
+    <string name="case_type_economic">اقتصادي</string>
+    <string name="case_type_administrative">محكمة إدارية</string>
+    <string name="case_type_housing">إسكان</string>
+    <string name="case_type_cassation">نقض</string>
+
+    <!-- File Upload & Management -->
+    <string name="upload_files_documents">رفع الملفات والمستندات</string>
+    <string name="files_documents">الملفات والمستندات</string>
+    <string name="documents_pdf">المستندات (PDF)</string>
+    <string name="images">الصور</string>
+    <string name="add_document">إضافة مستند</string>
+    <string name="add_image">إضافة صورة</string>
+    <string name="document">مستند</string>
+    <string name="image">صورة</string>
+    <string name="open_file">فتح</string>
+    <string name="open_file_with">فتح الملف بواسطة</string>
+    <string name="documents_count">المستندات (%1$d)</string>
+    <string name="images_count">الصور (%1$d)</string>
+    <string name="no_files_available">لا توجد ملفات متاحة</string>
+    <string name="file_error">خطأ في الملف</string>
+    <string name="file_not_accessible">الملف غير قابل للوصول</string>
+    <string name="unsupported_file_type">نوع ملف غير مدعوم</string>
+    <string name="file_too_large">الملف كبير جداً</string>
+    <string name="no_app_to_open_file">لا يوجد تطبيق لفتح هذا الملف</string>
+    <string name="error_opening_file">خطأ في فتح الملف</string>
+
+    <!-- Validation -->
+    <string name="field_required">هذا الحقل مطلوب</string>
+    <string name="invalid_phone_number">رقم هاتف غير صالح</string>
+    <string name="invalid_email">بريد إلكتروني غير صالح</string>
+    <string name="error_case_number_required">رقم القضية مطلوب</string>
+    <string name="error_case_year_required">سنة القضية مطلوبة</string>
+    <string name="error_case_year_format">سنة القضية يجب أن تكون 4 أرقام</string>
+    <string name="error_registration_date_required">تاريخ القيد مطلوب</string>
+    <string name="error_client_required">اختيار العميل مطلوب</string>
+    <string name="error_client_role_required">صفة العميل مطلوبة</string>
+    <string name="error_opponent_name_required">اسم الخصم مطلوب</string>
+    <string name="error_opponent_role_required">صفة الخصم مطلوبة</string>
+    <string name="error_case_subject_required">موضوع القضية مطلوب</string>
+    <string name="error_court_name_required">اسم المحكمة مطلوب</string>
+    <string name="error_fill_required_fields">يرجى ملء جميع الحقول المطلوبة</string>
+    <string name="error_correct_form_errors">يرجى تصحيح الأخطاء في النموذج</string>
+    <string name="success_case_registered">تم تسجيل القضية بنجاح</string>
+    <string name="error_client_name_required">اسم العميل مطلوب</string>
+    <string name="error_phone_required">رقم الهاتف مطلوب</string>
+    <string name="error_phone_invalid">رقم الهاتف غير صحيح</string>
+    <string name="error_email_invalid">البريد الإلكتروني غير صحيح</string>
+
+    <!-- Success Messages -->
+    <string name="success_operation">تمت العملية بنجاح</string>
+    <string name="success_saved">تم الحفظ بنجاح</string>
+    <string name="success_updated">تم التحديث بنجاح</string>
+    <string name="success_deleted">تم الحذف بنجاح</string>
+    <string name="client_saved_successfully">تم حفظ العميل بنجاح</string>
+    <string name="client_updated_successfully">تم تحديث العميل بنجاح</string>
+    <string name="client_deleted_successfully">تم حذف العميل بنجاح</string>
+    <string name="success_client_registered">تم تسجيل العميل بنجاح</string>
+    <string name="success_account_created">تم إنشاء الحساب بنجاح</string>
+
+    <!-- Error Messages -->
+    <string name="error">خطأ</string>
+    <string name="warning">تحذير</string>
+    <string name="loading">جاري التحميل…</string>
+    <string name="error_operation_failed">فشلت العملية</string>
+    <string name="error_network">خطأ في الاتصال بالشبكة</string>
+    <string name="error_server">خطأ في الخادم</string>
+    <string name="error_unknown">خطأ غير معروف</string>
+    <string name="error_try_again">يرجى المحاولة مرة أخرى</string>
+    <string name="network_error">خطأ في الاتصال</string>
+    <string name="unknown_error">خطأ غير معروف</string>
+    <string name="error_login_failed">فشل في تسجيل الدخول</string>
+    <string name="error_invalid_credentials">البريد الإلكتروني أو كلمة المرور غير صحيحة</string>
+
+    <!-- File Sizes -->
+    <string name="file_size_bytes">%1$d بايت</string>
+    <string name="file_size_kb">%1$.1f كيلوبايت</string>
+    <string name="file_size_mb">%1$.1f ميجابايت</string>
+    <string name="file_size_gb">%1$.1f جيجابايت</string>
+
+    <!-- Accessibility -->
+    <string name="content_description_client_photo">صورة العميل</string>
+    <string name="content_description_loading">جاري التحميل</string>
+    <string name="content_description_error">رمز الخطأ</string>
+    <string name="content_description_warning">رمز التحذير</string>
+
+    <!-- Biometric Authentication -->
+    <string name="biometric_login_title">تسجيل الدخول بالبصمة</string>
+    <string name="biometric_authentication_title">تسجيل الدخول بالبصمة</string>
+    <string name="biometric_authentication_subtitle">استخدم بصمتك لتسجيل الدخول</string>
+    <string name="biometric_verifying">جار التحقق من البصمة…</string>
+    <string name="biometric_place_finger">ضع إصبعك على مستشعر البصمة</string>
+    <string name="biometric_authentication_failed">فشل في المصادقة</string>
+    <string name="biometric_retry_count">عدد المحاولات: %1$d/%2$d</string>
+    <string name="biometric_normal_login">تسجيل دخول عادي</string>
+    <string name="biometric_add_fingerprint_help">يمكنك إضافة بصمة في إعدادات الجهاز > الأمان > البصمة</string>
+    <string name="biometric_security_update_help">يرجى تحديث نظام التشغيل من إعدادات الجهاز</string>
+
+    <!-- Biometric Error Messages -->
+    <string name="biometric_error_no_activity">تعذر الوصول إلى النشاط (Activity)</string>
+    <string name="biometric_error_no_hardware">جهازك لا يدعم المصادقة بالبصمة</string>
+    <string name="biometric_error_hardware_unavailable">مستشعر البصمة غير متاح حالياً</string>
+    <string name="biometric_error_not_enrolled">لا توجد بصمات مسجلة على الجهاز</string>
+    <string name="biometric_error_security_update_required">مطلوب تحديث أمني للجهاز</string>
+    <string name="biometric_error_check_failed">حدث خطأ في التحقق من إمكانية المصادقة</string>
+    <string name="biometric_error_unavailable">المصادقة بالبصمة غير متاحة</string>
+    <string name="biometric_error_context_invalid">لا يمكن استخدام المصادقة بالبصمة، السياق الحالي غير مناسب.</string>
+    <string name="biometric_error_lockout">تم قفل المصادقة بالبصمة مؤقتاً، حاول لاحقاً</string>
+    <string name="biometric_error_lockout_permanent">تم قفل المصادقة بالبصمة نهائياً</string>
+    <string name="biometric_error_cancelled">تم إلغاء المصادقة</string>
+    <string name="biometric_error_timeout">انتهت مهلة المصادقة</string>
+    <string name="biometric_error_unable_to_process">لا يمكن معالجة المصادقة</string>
+    <string name="biometric_error_vendor">خطأ في المصادقة</string>
+    <string name="biometric_error_general">فشلت المصادقة بالبصمة: %1$s</string>
+    <string name="biometric_error_prompt_failed">خطأ في عرض نافذة المصادقة: %1$s</string>
+    <string name="biometric_error_unexpected">حدث خطأ غير متوقع في المصادقة: %1$s</string>
+    <string name="biometric_error_no_saved_data">لا توجد بيانات محفوظة</string>
+    <string name="biometric_error_load_data">حدث خطأ في تحميل البيانات: %1$s</string>
+ </resources>

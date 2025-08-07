@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "443660235499",
+    "project_id": "lawyer666-d2fe0",
+    "storage_bucket": "lawyer666-d2fe0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:443660235499:android:dc7da4b1e1aa086d3f44ae",
+        "android_client_info": {
+          "package_name": "com.smartlawyer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzoGk39d66-ZO7UhGu7NbPUmARvdEIgeM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
