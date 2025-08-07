@@ -42,4 +42,5 @@
 2. استنسخ المشروع:
 
 ```bash
-git clone https://github.com/atefdodo/SmartLawyer-A.git
+git clone https://github.com/atefdodo/SmartLawyer.git
+
