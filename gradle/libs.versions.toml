@@ -2,7 +2,9 @@
 agp = "8.12.0"
 biometric = "1.1.0"
 coil-compose = "2.7.0"
+credentials = "1.5.0"
 datastore-preferences = "1.1.7"
+googleid = "1.1.1"
 gson = "2.13.1"
 kotlin = "2.2.0"
 compose-bom = "2025.07.00"
@@ -10,86 +12,77 @@ androidx-activity-compose = "1.10.1"
 kotlinx-coroutines-test = "1.10.2"
 material3-adaptive-navigation-suite = "1.5.0-alpha01"
 material3-window-size-class1 = "1.3.2"
-mockito-core = "5.18.0"
-mockito-core-version = "5.18.0"
-mockito-kotlin = "6.0.0"
-mockito-kotlin-version = "6.0.0"
+play-services-auth = "21.4.0"
 room = "2.7.2"
 ksp = "2.2.0-2.0.2"
 firebase-auth = "23.2.1"
 navigation = "2.9.3"
 google-services = "4.4.3"
-play-services-auth = "21.4.0"
 google-api-client = "2.8.0"
 google-api-services-drive = "v3-rev20220815-2.0.0"
 itext = "9.2.0"
 hilt = "2.57"
-kotlinx-metadata-jvm = "0.9.0"
+foundation = "1.8.3"
+ui = "1.8.3"
 
 [libraries]
+# AndroidX
 androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.16.0" }
+androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
+androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
+
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore-preferences" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version = "2.9.2" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity-compose" }
+androidx-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3-window-size-class1" }
 androidx-material3-adaptive-navigation-suite = { module = "androidx.compose.material3:material3-adaptive-navigation-suite", version.ref = "material3-adaptive-navigation-suite" }
-androidx-material3-v121 = { group = "androidx.compose.material3", name = "material3", version = "1.3.2" }
 androidx-material3-window-size-class1 = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "material3-window-size-class1" }
+androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
-gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines-test" }
-kotlinx-metadata-jvm = { group = "org.jetbrains.kotlinx", name = "kotlinx-metadata-jvm", version.ref = "kotlinx-metadata-jvm" }
+androidx-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
+androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version = "1.2.0" }
 
-# Compose BOM (Platform) - manages versions for all compose dependencies
+# Compose BOM & UI
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
-
-# Compose UI dependencies (versions managed by BOM)
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version = "1.8.3" }
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-
-# Material 3 (version managed by BOM)
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
-
-# Material Icons (versions managed by BOM)
 androidx-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 
-# Navigation
-androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
+# Google
+googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
+google-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services-auth" }
+google-api-client = { group = "com.google.api-client", name = "google-api-client-android", version.ref = "google-api-client" }
+google-api-services-drive = { group = "com.google.apis", name = "google-api-services-drive", version.ref = "google-api-services-drive" }
+
+# Firebase
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebase-auth" }
+
+# Other
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+itext-core = { group = "com.itextpdf", name = "itext7-core", version.ref = "itext" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines-test" }
 
 # Room
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
-# Firebase
-firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebase-auth" }
-google-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services-auth" }
-
-# Google APIs
-google-api-client = { group = "com.google.api-client", name = "google-api-client-android", version.ref = "google-api-client" }
-google-api-services-drive = { group = "com.google.apis", name = "google-api-services-drive", version.ref = "google-api-services-drive" }
-
-# iText
-itext-core = { group = "com.itextpdf", name = "itext7-core", version.ref = "itext" }
-
 # Hilt
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
-androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version = "1.2.0" }
 
 # Testing
 junit = { group = "junit", name = "junit", version = "4.13.2" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version = "1.3.0" }
 androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version = "3.7.0" }
-mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito-core" }
-mockito-core-v400 = { module = "org.mockito:mockito-core", version.ref = "mockito-core-version" }
-mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockito-kotlin" }
-mockito-kotlin-v320 = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockito-kotlin-version" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

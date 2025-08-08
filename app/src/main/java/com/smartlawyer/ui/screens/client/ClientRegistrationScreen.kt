@@ -64,24 +64,28 @@ fun ClientRegistrationScreen(
 
     // Validation function
     fun validateForm(): Boolean {
+        val client = Client(
+            name = name,
+            address = address,
+            phoneNumber = phoneNumber,
+            email = email,
+            powerOfAttorneyNumber = powerOfAttorneyNumber
+        )
+        
+        val validationResult = clientViewModel.validateClient(client)
+        
+        // Convert validation result to UI error format
         val errors = mutableMapOf<String, String>()
-        
-        if (name.isBlank()) {
-            errors["name"] = "اسم العميل مطلوب"
-        }
-        
-        if (phoneNumber.isBlank()) {
-            errors["phoneNumber"] = "رقم الهاتف مطلوب"
-        } else if (!phoneNumber.matches(Regex("^[0-9+\\-\\s()]+$"))) {
-            errors["phoneNumber"] = "رقم الهاتف غير صحيح"
-        }
-        
-        if (email.isNotBlank() && !email.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"))) {
-            errors["email"] = "البريد الإلكتروني غير صحيح"
+        validationResult.errors.forEach { error ->
+            when {
+                error.contains("اسم العميل") -> errors["name"] = error
+                error.contains("رقم الهاتف") -> errors["phoneNumber"] = error
+                error.contains("البريد الإلكتروني") -> errors["email"] = error
+            }
         }
         
         validationErrors = errors
-        return errors.isEmpty()
+        return validationResult.isValid
     }
 
     // Layout direction RTL

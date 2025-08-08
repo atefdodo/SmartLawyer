@@ -181,6 +181,17 @@ object StringResources {
     const val BIOMETRIC_ERROR_NO_SAVED_DATA = "biometric_error_no_saved_data"
     const val BIOMETRIC_ERROR_LOAD_DATA = "biometric_error_load_data"
     
+    // Google Sign-In
+    const val GOOGLE_SIGN_IN = "google_sign_in"
+    const val GOOGLE_SIGN_UP = "google_sign_up"
+    const val GOOGLE_SIGN_OUT = "google_sign_out"
+    const val GOOGLE_SIGN_IN_SUCCESS = "google_sign_in_success"
+    const val GOOGLE_SIGN_IN_FAILED = "google_sign_in_failed"
+    const val GOOGLE_SIGN_IN_CANCELLED = "google_sign_in_cancelled"
+    const val GOOGLE_SIGN_IN_NETWORK_ERROR = "google_sign_in_network_error"
+    const val GOOGLE_SIGN_IN_INVALID_ACCOUNT = "google_sign_in_invalid_account"
+    const val GOOGLE_SIGN_IN_REQUIRED = "google_sign_in_required"
+    
     // Loading States
     const val LOADING = "loading"
     const val ERROR = "error"

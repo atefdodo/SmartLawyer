@@ -27,6 +27,11 @@ class UserPreferences @Inject constructor(
         private val KEY_LANGUAGE = stringPreferencesKey("language")
 
         private val KEY_REMEMBER_ME = booleanPreferencesKey("remember_me")
+        
+        // Google Account Info
+        private val KEY_GOOGLE_ACCOUNT_EMAIL = stringPreferencesKey("google_account_email")
+        private val KEY_GOOGLE_ACCOUNT_NAME = stringPreferencesKey("google_account_name")
+        private val KEY_GOOGLE_ACCOUNT_ID = stringPreferencesKey("google_account_id")
 
 
         /** Static helper: Returns Pair(email, password) **/
@@ -65,6 +70,16 @@ class UserPreferences @Inject constructor(
     val isRememberMe: Flow<Boolean> = context.dataStore.data
         .map { it[KEY_REMEMBER_ME] ?: false }
 
+    // Google Account Info Flows
+    val googleAccountEmail: Flow<String> = context.dataStore.data
+        .map { it[KEY_GOOGLE_ACCOUNT_EMAIL] ?: "" }
+
+    val googleAccountName: Flow<String> = context.dataStore.data
+        .map { it[KEY_GOOGLE_ACCOUNT_NAME] ?: "" }
+
+    val googleAccountId: Flow<String> = context.dataStore.data
+        .map { it[KEY_GOOGLE_ACCOUNT_ID] ?: "" }
+
     suspend fun setRememberMe(enabled: Boolean) {
         context.dataStore.edit { it[KEY_REMEMBER_ME] = enabled }
     }
@@ -89,6 +104,23 @@ class UserPreferences @Inject constructor(
 
     suspend fun setLanguage(lang: String) {
         context.dataStore.edit { it[KEY_LANGUAGE] = lang }
+    }
+
+    // Google Account Info Setters
+    suspend fun saveGoogleAccountInfo(email: String, displayName: String, userId: String) {
+        context.dataStore.edit { prefs ->
+            prefs[KEY_GOOGLE_ACCOUNT_EMAIL] = email
+            prefs[KEY_GOOGLE_ACCOUNT_NAME] = displayName
+            prefs[KEY_GOOGLE_ACCOUNT_ID] = userId
+        }
+    }
+
+    suspend fun clearGoogleAccountInfo() {
+        context.dataStore.edit { prefs ->
+            prefs.remove(KEY_GOOGLE_ACCOUNT_EMAIL)
+            prefs.remove(KEY_GOOGLE_ACCOUNT_NAME)
+            prefs.remove(KEY_GOOGLE_ACCOUNT_ID)
+        }
     }
 
     /** Clear all stored preferences **/

@@ -2,12 +2,11 @@ package com.smartlawyer.ui.utils
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
+
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -38,8 +37,7 @@ object FileUtils {
             }
             
             file.absolutePath
-        } catch (e: Exception) {
-            Log.e(TAG, "Error saving file: ${e.message}")
+        } catch (_: Exception) {
             null
         }
     }
@@ -76,8 +74,7 @@ object FileUtils {
         return try {
             val file = File(path)
             if (file.exists()) file else null
-        } catch (e: Exception) {
-            Log.e(TAG, "Error getting file: ${e.message}")
+        } catch (_: Exception) {
             null
         }
     }
@@ -93,8 +90,7 @@ object FileUtils {
             } else {
                 true
             }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error deleting file: ${e.message}")
+        } catch (_: Exception) {
             false
         }
     }
@@ -114,8 +110,7 @@ object FileUtils {
             if (json.isBlank()) return emptyList()
             val type = object : TypeToken<List<String>>() {}.type
             gson.fromJson(json, type) ?: emptyList()
-        } catch (e: Exception) {
-            Log.e(TAG, "Error parsing JSON: ${e.message}")
+        } catch (_: Exception) {
             emptyList()
         }
     }

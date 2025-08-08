@@ -15,4 +15,7 @@ sealed class Screens(val route: String) {
     // Case management
     object CaseRegistration : Screens("case_registration_screen")
     object CaseList : Screens("case_list_screen")
+    object CaseEdit : Screens("case_edit_screen/{caseId}") {
+        fun createRoute(caseId: Long) = "case_edit_screen/$caseId"
+    }
 } 

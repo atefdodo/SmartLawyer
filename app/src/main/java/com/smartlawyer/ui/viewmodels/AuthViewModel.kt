@@ -1,10 +1,14 @@
 package com.smartlawyer.ui.viewmodels
 
 import android.app.Application
+import android.content.Context
 import android.util.Patterns
 import androidx.biometric.BiometricManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.smartlawyer.ui.utils.GoogleSignInHelper
 import com.smartlawyer.ui.utils.SessionManager
 import com.smartlawyer.ui.utils.StringResources
 import com.smartlawyer.ui.utils.UserPreferences
@@ -178,6 +182,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
             try {
                 val credentials = UserPreferences.getCredentials(context)
+                
                 if (credentials.first.isNotEmpty()) {
                     sessionManager.saveLoginSession(credentials.first)
                     userPreferences.setLoggedIn(true)
@@ -189,7 +194,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     _errorMessage.value = msg
                     onFailure(msg)
                 }
-            } catch (_: Exception) {
+            } catch (e: Exception) {
                 val msg = context.getStringByKey(StringResources.BIOMETRIC_ERROR_GENERAL)
                 _errorMessage.value = msg
                 onFailure(msg)
@@ -215,5 +220,134 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     fun isValidEmail(email: String?): Boolean {
         return email != null && Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+
+    /**
+     * Handle Google Sign-In success
+     */
+    fun handleGoogleSignInSuccess(credential: GoogleIdTokenCredential, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
+
+            try {
+                val email = credential.id ?: ""
+                val displayName = credential.displayName ?: ""
+                val userId = credential.id ?: ""
+
+                // Save Google account info
+                sessionManager.saveLoginSession(email)
+                userPreferences.setLoggedIn(true)
+                _isLoggedIn.value = true
+                _userEmail.value = email
+
+                // Save Google account details for future use
+                userPreferences.saveGoogleAccountInfo(email, displayName, userId)
+
+                onSuccess()
+            } catch (e: Exception) {
+                val msg = getApplication<Application>().getStringByKey(StringResources.ERROR_OPERATION_FAILED)
+                _errorMessage.value = msg
+                onFailure(msg)
+            }
+
+            _isLoading.value = false
+        }
+    }
+
+    /**
+     * Handle Google Sign-In failure
+     */
+    fun handleGoogleSignInFailure(errorMessage: String) {
+        _errorMessage.value = errorMessage
+    }
+
+         /**
+      * Sign out from Google
+      */
+     fun signOutFromGoogle(context: Context, onComplete: () -> Unit) {
+         try {
+             GoogleSignInHelper.signOut {
+                 viewModelScope.launch {
+                     // Clear local session
+                     sessionManager.clearSession()
+                     userPreferences.setLoggedIn(false)
+                     _isLoggedIn.value = false
+                     _userEmail.value = ""
+                     _errorMessage.value = null
+                     onComplete()
+                 }
+             }
+         } catch (e: Exception) {
+             viewModelScope.launch {
+                 _errorMessage.value = getApplication<Application>().getStringByKey(StringResources.ERROR_OPERATION_FAILED)
+                 onComplete()
+             }
+         }
+     }
+
+    /**
+     * Check if user is signed in with Google
+     */
+    suspend fun isSignedInWithGoogle(context: Context): Boolean {
+        return GoogleSignInHelper.isSignedIn(context)
+    }
+
+    /**
+     * Sign in with Google using Credential Manager
+     */
+    fun signInWithGoogle(context: Context, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
+
+            try {
+                GoogleSignInHelper.signInWithGoogle(
+                    context = context,
+                    onSuccess = { credential ->
+                        handleGoogleSignInSuccess(credential, onSuccess, onFailure)
+                    },
+                    onFailure = { errorMessage ->
+                        _errorMessage.value = errorMessage
+                        onFailure(errorMessage)
+                        _isLoading.value = false
+                    }
+                )
+            } catch (e: Exception) {
+                val msg = getApplication<Application>().getStringByKey(StringResources.ERROR_OPERATION_FAILED)
+                _errorMessage.value = msg
+                onFailure(msg)
+                _isLoading.value = false
+            }
+        }
+    }
+
+    /**
+     * Sign up with Google using Credential Manager
+     */
+    fun signUpWithGoogle(context: Context, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
+
+            try {
+                GoogleSignInHelper.signUpWithGoogle(
+                    context = context,
+                    onSuccess = { credential ->
+                        handleGoogleSignInSuccess(credential, onSuccess, onFailure)
+                    },
+                    onFailure = { errorMessage ->
+                        _errorMessage.value = errorMessage
+                        onFailure(errorMessage)
+                        _isLoading.value = false
+                    }
+                )
+            } catch (e: Exception) {
+                val msg = getApplication<Application>().getStringByKey(StringResources.ERROR_OPERATION_FAILED)
+                _errorMessage.value = msg
+                onFailure(msg)
+                _isLoading.value = false
+            }
+        }
     }
 }

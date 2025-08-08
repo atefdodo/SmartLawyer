@@ -9,10 +9,10 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -170,7 +170,7 @@ fun DocumentViewCard(
                     modifier = Modifier.size(24.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.OpenInNew,
+                        imageVector = Icons.AutoMirrored.Filled.OpenInNew,
                         contentDescription = "فتح",
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(16.dp)
@@ -242,7 +242,7 @@ fun ImageViewCard(
                     modifier = Modifier.size(24.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.OpenInNew,
+                        imageVector = Icons.AutoMirrored.Filled.OpenInNew,
                         contentDescription = "فتح",
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(16.dp)

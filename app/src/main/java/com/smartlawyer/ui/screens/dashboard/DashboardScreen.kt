@@ -2,10 +2,12 @@ package com.smartlawyer.ui.screens.dashboard
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material3.*
@@ -13,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -21,6 +24,8 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.smartlawyer.navigation.Screens
+import com.smartlawyer.ui.utils.StringResources
+import com.smartlawyer.ui.utils.getStringByKey
 import com.smartlawyer.ui.viewmodels.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,6 +36,17 @@ fun DashboardScreen(
 ) {
     val context = LocalContext.current
     val userEmail by viewModel.userEmail.collectAsState()
+    val scrollState = rememberScrollState()
+
+    // Logout function
+    fun handleLogout() {
+        // For now, just use regular logout since Google Sign-In is not fully implemented
+        viewModel.logout()
+        Toast.makeText(context, context.getStringByKey(StringResources.LOGOUT_SUCCESS), Toast.LENGTH_SHORT).show()
+        navController.navigate(Screens.Login.route) {
+            popUpTo(0) { inclusive = true }
+        }
+    }
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Scaffold(
@@ -38,13 +54,7 @@ fun DashboardScreen(
                 TopAppBar(
                     title = { Text("لوحة التحكم") },
                     actions = {
-                        IconButton(onClick = {
-                            viewModel.logout()
-                            Toast.makeText(context, "تم تسجيل الخروج", Toast.LENGTH_SHORT).show()
-                            navController.navigate(Screens.Login.route) {
-                                popUpTo(0) { inclusive = true }
-                            }
-                        }) {
+                        IconButton(onClick = { handleLogout() }) {
                             Icon(Icons.AutoMirrored.Filled.Logout, contentDescription = "تسجيل الخروج")
                         }
                     }
@@ -55,7 +65,8 @@ fun DashboardScreen(
                 modifier = Modifier
                     .padding(padding)
                     .padding(16.dp)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .verticalScroll(scrollState),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -71,12 +82,15 @@ fun DashboardScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
+
+
                 // Client Management Card
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surfaceVariant
-                    )
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
                     Column(
                         modifier = Modifier.padding(16.dp),
@@ -105,7 +119,7 @@ fun DashboardScreen(
                             onClick = { navController.navigate(Screens.ClientList.route) },
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Icon(Icons.Default.List, contentDescription = null)
+                            Icon(Icons.AutoMirrored.Filled.List, contentDescription = null)
                             Spacer(modifier = Modifier.width(8.dp))
                             Text("عرض قائمة العملاء")
                         }
@@ -131,7 +145,8 @@ fun DashboardScreen(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surfaceVariant
-                    )
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
                     Column(
                         modifier = Modifier.padding(16.dp),
@@ -160,7 +175,7 @@ fun DashboardScreen(
                             onClick = { navController.navigate(Screens.CaseList.route) },
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Icon(Icons.Default.List, contentDescription = null)
+                            Icon(Icons.AutoMirrored.Filled.List, contentDescription = null)
                             Spacer(modifier = Modifier.width(8.dp))
                             Text("عرض قائمة القضايا")
                         }
@@ -178,6 +193,11 @@ fun DashboardScreen(
                         }
                     }
                 }
+                
+
+                
+                // Add bottom spacing to ensure all content is visible
+                Spacer(modifier = Modifier.height(32.dp))
             }
         }
     }

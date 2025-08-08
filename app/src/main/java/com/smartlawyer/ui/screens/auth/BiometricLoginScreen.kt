@@ -190,35 +190,39 @@ fun BiometricLoginScreen(
                                     
                                     Spacer(modifier = Modifier.height(16.dp))
                                     
-                                    Text(
-                                        text = BiometricHelper.getStatusMessage(context, biometricStatus!!),
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        textAlign = TextAlign.Center,
-                                        color = MaterialTheme.colorScheme.onErrorContainer
-                                    )
+                                    biometricStatus?.let { status ->
+                                        Text(
+                                            text = BiometricHelper.getStatusMessage(context, status),
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            textAlign = TextAlign.Center,
+                                            color = MaterialTheme.colorScheme.onErrorContainer
+                                        )
+                                    }
                                     
                                     Spacer(modifier = Modifier.height(16.dp))
                                     
                                     // Help text based on status
-                                    when (biometricStatus) {
-                                        BiometricStatus.NOT_ENROLLED -> {
-                                            Text(
-                                                text = context.getStringByKey(StringResources.BIOMETRIC_ADD_FINGERPRINT_HELP),
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                textAlign = TextAlign.Center,
-                                                color = MaterialTheme.colorScheme.onErrorContainer
-                                            )
-                                        }
-                                        BiometricStatus.SECURITY_UPDATE_REQUIRED -> {
-                                            Text(
-                                                text = context.getStringByKey(StringResources.BIOMETRIC_SECURITY_UPDATE_HELP),
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                textAlign = TextAlign.Center,
-                                                color = MaterialTheme.colorScheme.onErrorContainer
-                                            )
-                                        }
-                                        else -> {
-                                            // No additional help text for other statuses
+                                    biometricStatus?.let { status ->
+                                        when (status) {
+                                            BiometricStatus.NOT_ENROLLED -> {
+                                                Text(
+                                                    text = context.getStringByKey(StringResources.BIOMETRIC_ADD_FINGERPRINT_HELP),
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    textAlign = TextAlign.Center,
+                                                    color = MaterialTheme.colorScheme.onErrorContainer
+                                                )
+                                            }
+                                            BiometricStatus.SECURITY_UPDATE_REQUIRED -> {
+                                                Text(
+                                                    text = context.getStringByKey(StringResources.BIOMETRIC_SECURITY_UPDATE_HELP),
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    textAlign = TextAlign.Center,
+                                                    color = MaterialTheme.colorScheme.onErrorContainer
+                                                )
+                                            }
+                                            else -> {
+                                                // No additional help text for other statuses
+                                            }
                                         }
                                     }
                                 }

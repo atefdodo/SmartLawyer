@@ -18,7 +18,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -33,7 +32,6 @@ import com.smartlawyer.ui.components.FileViewer
 import com.smartlawyer.ui.components.ErrorDialog
 import com.smartlawyer.ui.utils.FileUtils
 import com.smartlawyer.ui.viewmodels.ClientViewModel
-import kotlinx.coroutines.launch
 
 /**
  * Screen for displaying list of clients in card format
@@ -44,11 +42,7 @@ fun ClientListScreen(
     navController: NavController,
     clientViewModel: ClientViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-
     // State variables
-    var searchQuery by remember { mutableStateOf("") }
     var selectedClient by remember { mutableStateOf<Client?>(null) }
     var showClientDetails by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
@@ -60,11 +54,9 @@ fun ClientListScreen(
     val clients by clientViewModel.clients.collectAsState()
     val isLoading by clientViewModel.isLoading.collectAsState()
     val error by clientViewModel.error.collectAsState()
+    val searchQuery by clientViewModel.searchQuery.collectAsState()
 
-    // Debug logging
-    LaunchedEffect(clients) {
-        println("ClientListScreen: Received ${clients.size} clients")
-    }
+
 
     // Handle errors from ViewModel
     LaunchedEffect(error) {
@@ -111,13 +103,6 @@ fun ClientListScreen(
                         }
                     },
                     actions = {
-                        // Test button for debugging
-                        IconButton(onClick = { clientViewModel.addTestClient() }) {
-                            Icon(
-                                Icons.Default.Person,
-                                contentDescription = "Add Test Client"
-                            )
-                        }
                         IconButton(onClick = { navController.navigate("client_registration_screen") }) {
                             Icon(
                                 Icons.Default.Add,
@@ -141,7 +126,7 @@ fun ClientListScreen(
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { 
-                        searchQuery = it
+                        clientViewModel.updateSearchQuery(it)
                         clientViewModel.searchClients(it)
                     },
                     label = { Text(stringResource(R.string.search_clients)) },

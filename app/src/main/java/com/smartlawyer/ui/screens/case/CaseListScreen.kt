@@ -1,5 +1,6 @@
 package com.smartlawyer.ui.screens.case
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,6 +9,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
@@ -23,11 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.smartlawyer.data.entities.Case
+import com.smartlawyer.navigation.Screens
 import com.smartlawyer.ui.components.FileViewer
 import com.smartlawyer.ui.utils.FileUtils
 import com.smartlawyer.ui.viewmodels.CaseViewModel
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+
 
 /**
  * Screen for displaying list of cases in card format
@@ -39,12 +42,31 @@ fun CaseListScreen(
     caseViewModel: CaseViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    var searchQuery by remember { mutableStateOf("") }
     var selectedCase by remember { mutableStateOf<Case?>(null) }
     var showCaseDetails by remember { mutableStateOf(false) }
+    var caseToDelete by remember { mutableStateOf<Case?>(null) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    
+    // Bulk operations state
+    var isMultiSelectMode by remember { mutableStateOf(false) }
+    var selectedCases by remember { mutableStateOf(setOf<Case>()) }
+    var showBulkDeleteDialog by remember { mutableStateOf(false) }
+    
+
 
     val cases by caseViewModel.cases.collectAsState()
     val isLoading by caseViewModel.isLoading.collectAsState()
+    val searchQuery by caseViewModel.searchQuery.collectAsState()
+    val error by caseViewModel.errorMessage.collectAsState()
+
+    // Handle errors from ViewModel
+    LaunchedEffect(error) {
+        error?.let { errorMsg ->
+            // You can show a toast or dialog here
+            println("CaseListScreen: Error - $errorMsg")
+            caseViewModel.clearError()
+        }
+    }
 
     // Load cases on first launch
     LaunchedEffect(Unit) {
@@ -72,8 +94,40 @@ fun CaseListScreen(
                         }
                     },
                     actions = {
-                        IconButton(onClick = { navController.navigate("case_registration_screen") }) {
-                            Icon(Icons.Default.Add, contentDescription = "إضافة قضية جديدة")
+                        // Bulk operations
+                        if (isMultiSelectMode) {
+                            // Cancel multi-select
+                            IconButton(onClick = { 
+                                isMultiSelectMode = false
+                                selectedCases = setOf()
+                            }) {
+                                Icon(
+                                    Icons.Default.Edit,
+                                    contentDescription = "إلغاء التحديد المتعدد"
+                                )
+                            }
+                            // Bulk delete
+                            if (selectedCases.isNotEmpty()) {
+                                IconButton(onClick = { showBulkDeleteDialog = true }) {
+                                    Icon(
+                                        Icons.Default.Delete,
+                                        contentDescription = "حذف المحدد",
+                                        tint = MaterialTheme.colorScheme.error
+                                    )
+                                }
+                            }
+                        } else {
+                            // Multi-select mode
+                            IconButton(onClick = { isMultiSelectMode = true }) {
+                                Icon(
+                                    Icons.Default.Edit,
+                                    contentDescription = "وضع التحديد المتعدد"
+                                )
+                            }
+
+                            IconButton(onClick = { navController.navigate("case_registration_screen") }) {
+                                Icon(Icons.Default.Add, contentDescription = "إضافة قضية جديدة")
+                            }
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -91,7 +145,10 @@ fun CaseListScreen(
                 // Search Bar
                 OutlinedTextField(
                     value = searchQuery,
-                    onValueChange = { searchQuery = it },
+                    onValueChange = { 
+                        caseViewModel.updateSearchQuery(it)
+                        caseViewModel.searchCases(it)
+                    },
                     label = { Text("البحث في القضايا") },
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = "بحث") },
                     modifier = Modifier
@@ -138,15 +195,32 @@ fun CaseListScreen(
                         contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        items(cases) { case ->
-                            CaseCard(
-                                case = case,
-                                onClick = {
-                                    selectedCase = case
-                                    showCaseDetails = true
-                                }
-                            )
+                                    items(cases) { case ->
+                CaseCard(
+                    case = case,
+                    isMultiSelectMode = isMultiSelectMode,
+                    isSelected = selectedCases.contains(case),
+                    onClick = {
+                        if (isMultiSelectMode) {
+                            selectedCases = if (selectedCases.contains(case)) {
+                                selectedCases - case
+                            } else {
+                                selectedCases + case
+                            }
+                        } else {
+                            selectedCase = case
+                            showCaseDetails = true
                         }
+                    },
+                    onEdit = {
+                        navController.navigate(Screens.CaseEdit.createRoute(case.id))
+                    },
+                    onDelete = {
+                        caseToDelete = case
+                        showDeleteDialog = true
+                    }
+                )
+            }
                     }
                 }
             }
@@ -161,6 +235,76 @@ fun CaseListScreen(
                     }
                 )
             }
+
+            // Delete Confirmation Dialog
+            if (showDeleteDialog && caseToDelete != null) {
+                AlertDialog(
+                    onDismissRequest = {
+                        showDeleteDialog = false
+                        caseToDelete = null
+                    },
+                    title = {
+                        Text("تأكيد الحذف")
+                    },
+                    text = {
+                        Text("هل أنت متأكد من حذف القضية رقم ${caseToDelete!!.caseNumber}؟")
+                    },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                caseToDelete?.let { case ->
+                                    caseViewModel.deleteCase(case) {
+                                        // Case deleted successfully
+                                        Toast.makeText(context, "تم حذف القضية بنجاح", Toast.LENGTH_SHORT).show()
+                                        showDeleteDialog = false
+                                        caseToDelete = null
+                                    }
+                                }
+                            }
+                        ) {
+                            Text("حذف", color = MaterialTheme.colorScheme.error)
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = {
+                                showDeleteDialog = false
+                                caseToDelete = null
+                            }
+                        ) {
+                            Text("إلغاء")
+                        }
+                    }
+                )
+            }
+
+            // Bulk Delete Confirmation Dialog
+            if (showBulkDeleteDialog) {
+                AlertDialog(
+                    onDismissRequest = { showBulkDeleteDialog = false },
+                    title = { Text("تأكيد الحذف المتعدد") },
+                    text = { Text("هل أنت متأكد من حذف ${selectedCases.size} قضية محددة؟") },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                caseViewModel.deleteCases(selectedCases.toList()) {
+                                    Toast.makeText(context, "تم حذف ${selectedCases.size} قضية بنجاح", Toast.LENGTH_SHORT).show()
+                                    showBulkDeleteDialog = false
+                                    isMultiSelectMode = false
+                                    selectedCases = setOf()
+                                }
+                            }
+                        ) {
+                            Text("حذف", color = MaterialTheme.colorScheme.error)
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showBulkDeleteDialog = false }) {
+                            Text("إلغاء")
+                        }
+                    }
+                )
+            }
         }
     }
 }
@@ -172,17 +316,39 @@ fun CaseListScreen(
 @Composable
 fun CaseCard(
     case: Case,
-    onClick: () -> Unit
+    isMultiSelectMode: Boolean = false,
+    isSelected: Boolean = false,
+    onClick: () -> Unit,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
+        )
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
+            // Selection indicator for multi-select mode
+            if (isMultiSelectMode) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Icon(
+                        imageVector = if (isSelected) Icons.Default.Edit else Icons.Default.Edit,
+                        contentDescription = if (isSelected) "محدد" else "غير محدد",
+                        tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+            }
             // Case Number and Type
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -251,6 +417,40 @@ fun CaseCard(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Action Buttons
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                // Edit Button
+                IconButton(
+                    onClick = onEdit,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "تعديل",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+
+                // Delete Button
+                IconButton(
+                    onClick = onDelete,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "حذف",
+                        tint = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
         }
     }
 }

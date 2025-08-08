@@ -19,8 +19,6 @@ import androidx.navigation.NavController
 import com.smartlawyer.R
 import com.smartlawyer.ui.utils.BiometricHelper
 import com.smartlawyer.ui.utils.BiometricStatus
-import com.smartlawyer.ui.utils.StringResources
-import com.smartlawyer.ui.utils.getStringByKey
 import com.smartlawyer.ui.viewmodels.AuthViewModel
 import kotlinx.coroutines.delay
 
@@ -28,68 +26,59 @@ import kotlinx.coroutines.delay
 fun SplashScreen(
     navController: NavController,
     viewModel: AuthViewModel = hiltViewModel(),
-    splashDurationMillis: Long = 2000L
+    splashDurationMillis: Long = 3000L
 ) {
     val context = LocalContext.current
     val isLoggedIn by viewModel.isLoggedIn.collectAsState()
+    
+    // State to track if navigation has been triggered
+    var hasNavigated by remember { mutableStateOf(false) }
 
+    // Ensure splash screen is visible for the full duration
     LaunchedEffect(Unit) {
-        delay(splashDurationMillis)
-
-        if (isLoggedIn) {
-            // User is already logged in, go to dashboard
-            navController.navigate("dashboard_screen") {
-                popUpTo("splash_screen") { inclusive = true }
-            }
-        } else {
-            // Check if biometric is available and user has saved credentials
-            val biometricStatus = if (context is FragmentActivity) {
-                BiometricHelper.isBiometricAvailable(context)
-            } else {
-                BiometricStatus.UNAVAILABLE
-            }
-
-            if (biometricStatus == BiometricStatus.AVAILABLE &&
-                context is FragmentActivity &&
-                viewModel.isBiometricAvailable()) {
-
-                // Show biometric prompt
-                BiometricHelper.authenticate(
-                    context = context,
-                    title = context.getStringByKey(StringResources.BIOMETRIC_AUTHENTICATION_TITLE),
-                    subtitle = context.getStringByKey(StringResources.BIOMETRIC_PLACE_FINGER),
-                    onSuccess = {
-                        viewModel.biometricLogin(
-                            onSuccess = {
-                                navController.navigate("dashboard_screen") {
-                                    popUpTo("splash_screen") { inclusive = true }
-                                }
-                            },
-                            onFailure = { _ ->
-                                // Biometric login failed, go to normal login
-                                navController.navigate("login_screen") {
-                                    popUpTo("splash_screen") { inclusive = true }
-                                }
-                            }
-                        )
-                    },
-                    onError = { _ ->
-                        // Biometric authentication error, go to normal login
-                        navController.navigate("login_screen") {
+        try {
+            // Always wait for the full splash duration, regardless of login status
+            delay(splashDurationMillis)
+            
+            // Only navigate if we haven't already
+            if (!hasNavigated) {
+                hasNavigated = true
+                
+                // Now check login status and navigate accordingly
+                when {
+                    isLoggedIn -> {
+                        // User is already logged in, go to dashboard
+                        navController.navigate("dashboard_screen") {
                             popUpTo("splash_screen") { inclusive = true }
                         }
                     }
-                )
-            } else {
-                // No biometric or not available, go to normal login
-                navController.navigate("login_screen") {
-                    popUpTo("splash_screen") { inclusive = true }
+
+                    // Check if we should try biometric authentication
+                    shouldTryBiometric(context, viewModel) -> {
+                        navigateToBiometricLogin(navController)
+                    }
+
+                    else -> {
+                        // Go to normal login
+                        navigateToLogin(navController)
+                    }
                 }
+            }
+        } catch (_: Exception) {
+            // On any error, go to login screen
+            if (!hasNavigated) {
+                hasNavigated = true
+                navigateToLogin(navController)
             }
         }
     }
 
-    // Splash UI
+    // Splash UI - This should always be visible
+    SplashContent()
+}
+
+@Composable
+private fun SplashContent() {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -97,7 +86,8 @@ fun SplashScreen(
         contentAlignment = Alignment.Center
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Image(
                 painter = painterResource(id = R.drawable.mm_logo),
@@ -113,6 +103,53 @@ fun SplashScreen(
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimary
             )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "جاري التحميل...",
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Optional: Add a loading indicator
+            androidx.compose.material3.CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.size(24.dp)
+            )
         }
+    }
+}
+
+private fun shouldTryBiometric(context: android.content.Context, viewModel: AuthViewModel): Boolean {
+    return try {
+        // Check if context is FragmentActivity and biometric is available
+        context is FragmentActivity &&
+                viewModel.isBiometricAvailable() &&
+                BiometricHelper.isBiometricAvailable(context) == BiometricStatus.AVAILABLE
+    } catch (_: Exception) {
+        false
+    }
+}
+
+private fun navigateToBiometricLogin(navController: NavController) {
+    try {
+        navController.navigate("biometric_login_screen") {
+            popUpTo("splash_screen") { inclusive = true }
+        }
+    } catch (_: Exception) {
+        navigateToLogin(navController)
+    }
+}
+
+private fun navigateToLogin(navController: NavController) {
+    try {
+        navController.navigate("login_screen") {
+            popUpTo("splash_screen") { inclusive = true }
+        }
+    } catch (_: Exception) {
+        // If navigation fails, at least we tried
     }
 }

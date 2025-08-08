@@ -1,6 +1,8 @@
 package com.smartlawyer.ui.screens.auth
 
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -50,6 +52,21 @@ fun RegisterScreen(
 
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+
+    // Google Sign-Up function
+    fun handleGoogleSignUp() {
+        viewModel.signUpWithGoogle(
+            context = context,
+            onSuccess = {
+                navController.navigate("dashboard_screen") {
+                    popUpTo(0) { inclusive = true }
+                }
+            },
+            onFailure = { errorMsg ->
+                Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
+            }
+        )
+    }
 
     // Show error message if any
     LaunchedEffect(errorMessage) {
@@ -220,6 +237,17 @@ fun RegisterScreen(
                     } else {
                         Text(context.getStringByKey(StringResources.REGISTER_BUTTON))
                     }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Google Sign-Up Button
+                OutlinedButton(
+                    onClick = { handleGoogleSignUp() },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !isLoading
+                ) {
+                    Text(context.getStringByKey(StringResources.GOOGLE_SIGN_UP))
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

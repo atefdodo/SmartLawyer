@@ -3,9 +3,12 @@ package com.smartlawyer.navigation
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.smartlawyer.ui.screens.auth.*
+import com.smartlawyer.ui.screens.case.CaseEditScreen
 import com.smartlawyer.ui.screens.case.CaseListScreen
 import com.smartlawyer.ui.screens.case.CaseRegistrationScreen
 import com.smartlawyer.ui.screens.client.ClientListScreen
@@ -64,6 +67,19 @@ fun AppNavGraph(
 
         composable(Screens.CaseList.route) {
             CaseListScreen(navController = navController)
+        }
+
+        composable(
+            route = Screens.CaseEdit.route,
+            arguments = listOf(
+                navArgument("caseId") { type = NavType.LongType }
+            )
+        ) { backStackEntry ->
+            val caseId = backStackEntry.arguments?.getLong("caseId") ?: 0L
+            CaseEditScreen(
+                navController = navController,
+                caseId = caseId
+            )
         }
     }
 }

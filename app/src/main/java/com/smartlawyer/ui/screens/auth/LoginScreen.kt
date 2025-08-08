@@ -1,6 +1,8 @@
 package com.smartlawyer.ui.screens.auth
 
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,9 +24,11 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.smartlawyer.ui.utils.BiometricHelper
 import com.smartlawyer.ui.utils.StringResources
 import com.smartlawyer.ui.utils.getStringByKey
 import com.smartlawyer.ui.viewmodels.AuthViewModel
+
 
 /**
  * Screen for user login with enhanced validation
@@ -48,6 +52,21 @@ fun LoginScreen(
 
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+
+    // Google Sign-In function
+    fun handleGoogleSignIn() {
+        viewModel.signInWithGoogle(
+            context = context,
+            onSuccess = {
+                navController.navigate("dashboard_screen") {
+                    popUpTo(0) { inclusive = true }
+                }
+            },
+            onFailure = { errorMsg ->
+                Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
+            }
+        )
+    }
 
     // Show error message if any
     LaunchedEffect(errorMessage) {
@@ -182,17 +201,36 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Google Sign-In Button
+                OutlinedButton(
+                    onClick = { handleGoogleSignIn() },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !isLoading
+                ) {
+                    Text(context.getStringByKey(StringResources.GOOGLE_SIGN_IN))
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 // Biometric Login Button
                 if (viewModel.isBiometricAvailable()) {
                     OutlinedButton(
                         onClick = {
-                            viewModel.biometricLogin(
+                            BiometricHelper.showBiometricPrompt(
+                                activity = context as androidx.fragment.app.FragmentActivity,
+                                title = context.getStringByKey(StringResources.BIOMETRIC_AUTHENTICATION_TITLE),
+                                subtitle = context.getStringByKey(StringResources.BIOMETRIC_PLACE_FINGER),
                                 onSuccess = {
-                                    navController.navigate("dashboard_screen") {
-                                        popUpTo(0) { inclusive = true }
-                                    }
+                                    viewModel.biometricLogin(
+                                        onSuccess = {
+                                            navController.navigate("dashboard_screen") {
+                                                popUpTo(0) { inclusive = true }
+                                            }
+                                        },
+                                        onFailure = { /* Error handled by viewModel */ }
+                                    )
                                 },
-                                onFailure = { /* Error handled by viewModel */ }
+                                onError = { /* Handle biometric error */ }
                             )
                         },
                         modifier = Modifier.fillMaxWidth(),

@@ -60,6 +60,13 @@ class ClientViewModel @Inject constructor(
     }
 
     /**
+     * Update search query
+     */
+    fun updateSearchQuery(query: String) {
+        _searchQuery.value = query
+    }
+
+    /**
      * Search clients by query
      */
     fun searchClients(query: String) {
@@ -149,27 +156,7 @@ class ClientViewModel @Inject constructor(
 
 
 
-    /**
-     * Add test client for debugging
-     */
-    fun addTestClient() {
-        viewModelScope.launch {
-            try {
-                val testClient = Client(
-                    name = "عميل تجريبي",
-                    address = "عنوان تجريبي",
-                    phoneNumber = "0123456789",
-                    email = "test@example.com",
-                    powerOfAttorneyNumber = "12345"
-                )
-                clientRepository.insertClient(testClient)
-                println("ClientViewModel: Test client added successfully")
-            } catch (e: Exception) {
-                println("ClientViewModel: Error adding test client: ${e.message}")
-                _error.value = handleException(e)
-            }
-        }
-    }
+
 
     /**
      * Handle exceptions and return user-friendly error messages

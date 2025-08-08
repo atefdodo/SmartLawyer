@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 
 /**
@@ -18,7 +19,9 @@ object BiometricHelper {
     fun isBiometricAvailable(context: Context): BiometricStatus {
         return try {
             val biometricManager = BiometricManager.from(context)
-            when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)) {
+            val result = biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)
+
+            when (result) {
                 BiometricManager.BIOMETRIC_SUCCESS -> BiometricStatus.AVAILABLE
                 BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> BiometricStatus.NO_HARDWARE
                 BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> BiometricStatus.HARDWARE_UNAVAILABLE
@@ -27,7 +30,7 @@ object BiometricHelper {
                 else -> BiometricStatus.UNAVAILABLE
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Error checking biometric availability: ${e.message}")
+            Log.e(TAG, "Error checking biometric availability", e)
             BiometricStatus.UNAVAILABLE
         }
     }
@@ -56,36 +59,48 @@ object BiometricHelper {
         onError: (String) -> Unit
     ) {
         try {
+            // Check if biometric is available first
+            val biometricStatus = isBiometricAvailable(activity)
+            if (biometricStatus != BiometricStatus.AVAILABLE) {
+                onError(getStatusMessage(activity, biometricStatus))
+                return
+            }
+
             val promptInfo = BiometricPrompt.PromptInfo.Builder()
                 .setTitle(title)
                 .setSubtitle(subtitle)
                 .setNegativeButtonText(activity.getStringByKey(StringResources.CANCEL))
+                .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG)
                 .build()
 
-            val biometricPrompt = BiometricPrompt(activity, object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                    super.onAuthenticationSucceeded(result)
-                    Log.d(TAG, "Biometric authentication succeeded")
-                    onSuccess()
-                }
+            val biometricPrompt = BiometricPrompt(
+                activity,
+                ContextCompat.getMainExecutor(activity), // This was missing!
+                object : BiometricPrompt.AuthenticationCallback() {
+                    override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                        super.onAuthenticationSucceeded(result)
+                        Log.d(TAG, "Biometric authentication succeeded")
+                        onSuccess()
+                    }
 
-                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                    super.onAuthenticationError(errorCode, errString)
-                    val errorMessage = getBiometricErrorMessage(activity, errorCode, errString.toString())
-                    Log.e(TAG, "Biometric authentication error: $errorMessage")
-                    onError(errorMessage)
-                }
+                    override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                        super.onAuthenticationError(errorCode, errString)
+                        Log.e(TAG, "Biometric authentication error: $errorCode - $errString")
+                        val errorMessage = getBiometricErrorMessage(activity, errorCode, errString.toString())
+                        onError(errorMessage)
+                    }
 
-                override fun onAuthenticationFailed() {
-                    super.onAuthenticationFailed()
-                    Log.w(TAG, "Biometric authentication failed")
-                    onError(activity.getStringByKey(StringResources.BIOMETRIC_AUTHENTICATION_FAILED))
+                    override fun onAuthenticationFailed() {
+                        super.onAuthenticationFailed()
+                        Log.w(TAG, "Biometric authentication failed")
+                        onError(activity.getStringByKey(StringResources.BIOMETRIC_AUTHENTICATION_FAILED))
+                    }
                 }
-            })
+            )
 
             biometricPrompt.authenticate(promptInfo)
         } catch (e: Exception) {
-            Log.e(TAG, "Error showing biometric prompt: ${e.message}")
+            Log.e(TAG, "Error showing biometric prompt", e)
             onError(activity.getStringByKey(StringResources.BIOMETRIC_ERROR_PROMPT_FAILED, e.message ?: ""))
         }
     }
@@ -105,6 +120,7 @@ object BiometricHelper {
             BiometricPrompt.ERROR_TIMEOUT -> context.getStringByKey(StringResources.BIOMETRIC_ERROR_TIMEOUT)
             BiometricPrompt.ERROR_UNABLE_TO_PROCESS -> context.getStringByKey(StringResources.BIOMETRIC_ERROR_UNABLE_TO_PROCESS)
             BiometricPrompt.ERROR_VENDOR -> context.getStringByKey(StringResources.BIOMETRIC_ERROR_VENDOR)
+            BiometricPrompt.ERROR_USER_CANCELED -> context.getStringByKey(StringResources.BIOMETRIC_ERROR_CANCELLED)
             else -> context.getStringByKey(StringResources.BIOMETRIC_ERROR_GENERAL, errString)
         }
     }

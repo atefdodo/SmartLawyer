@@ -12,7 +12,20 @@
           "package_name": "com.smartlawyer"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "443660235499-gt05fpaqc1verbcm3abj34r5bi83icen.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.smartlawyer",
+            "certificate_hash": "79935a95eb79c82582bdf14bf6159d6d9c6d1411"
+          }
+        },
+        {
+          "client_id": "443660235499-46hvt390et8doint7fp98598g5b1mati.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCzoGk39d66-ZO7UhGu7NbPUmARvdEIgeM"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "443660235499-46hvt390et8doint7fp98598g5b1mati.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
